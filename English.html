@@ -1,506 +1,882 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Cricverse</title>
-  <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css"/>
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      background: #0a0a0a;
-      font-family: 'Poppins', sans-serif;
-      overflow-x: hidden;
-      color: #e0e0e0;
-    }
-
-    header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 65px;
-      background: rgba(10, 10, 10, 0.85);
-      backdrop-filter: blur(5px);
-      -webkit-backdrop-filter: blur(5px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      z-index: 9999;
-      box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
-    }
-
-    header img {
-      height: 65%;
-      filter: drop-shadow(0 0 8px rgba(29, 185, 84, 0.3));
-      transition: filter 0.3s ease;
-    }
-
-    header:hover img {
-      filter: drop-shadow(0 0 12px rgba(29, 185, 84, 0.5));
-    }
-/* 🔔 Telegram Join Popup Styles */
-.popup-overlay {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: rgba(0, 0, 0, 0.7);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 10002;
-}
-
-.popup-box {
-  width: 320px;
-  background: rgba(20, 20, 30, 0.6);
-  border: 1px solid rgba(173, 216, 230, 0.25);
-  border-radius: 20px;
-  backdrop-filter: blur(15px);
-  box-shadow: 0 0 25px rgba(0, 255, 255, 0.4), 0 0 80px rgba(173, 216, 230, 0.15);
-  padding: 2rem 1.5rem;
-  text-align: center;
-  animation: fadeIn 0.5s ease forwards;
-  position: relative;
-}
-
-@keyframes fadeIn {
-  from { transform: scale(0.95); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
-}
-
-.popup-header {
-  font-size: 2rem;
-  font-weight: 700;
-  background: linear-gradient(45deg, #00eaff, #bd00ff);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  margin-bottom: 0.4rem;
-  text-shadow: 0 0 8px rgba(0, 255, 255, 0.4);
-}
-
-.popup-subtitle {
-  font-size: 1rem;
-  color: #aaa;
-  margin-bottom: 1.2rem;
-}
-
-.popup-buttons {
-  display: flex;
-  flex-direction: column;
-  gap: 0.7rem;
-}
-
-.popup-buttons a {
-  text-decoration: none;
-}
-
-.popup-btn {
-  padding: 0.8rem;
-  border-radius: 12px;
-  font-weight: 600;
-  font-size: 1rem;
-  color: #fff;
-  cursor: pointer;
-  transition: all 0.35s ease;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  position: relative;
-  overflow: hidden;
-}
-
-.popup-btn::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(120deg, rgba(0,255,255,0.3), rgba(255,0,255,0.2));
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.popup-btn:hover::after {
-  opacity: 1;
-}
-
-.join-btn {
-  background: linear-gradient(135deg, #00eaff, #9c00ff);
-  box-shadow: 0 0 12px rgba(0, 255, 255, 0.4);
-}
-
-.join-btn:hover {
-  background: linear-gradient(135deg, #00ffff, #c000ff);
-  box-shadow: 0 0 16px rgba(0, 255, 255, 0.6);
-}
-
-.already-btn {
-  background: rgba(255,255,255,0.05);
-}
-
-.already-btn:hover {
-  background: rgba(255,255,255,0.15);
-}
-
-.close-btn {
-  position: absolute;
-  top: 12px;
-  right: 18px;
-  font-size: 1.3rem;
-  color: #00eaff;
-  background: none;
-  border: none;
-  cursor: pointer;
-  transition: color 0.3s;
-}
-
-.close-btn:hover {
-  color: #ff00cc;
-}
-    .video-container {
-      width: 100vw;
-      aspect-ratio: 16/9;
-      background: #000;
-      margin-top: 70px; /* Space for fixed header */
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    }
-
-    video {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-    }
-
-    .tabs {
-      display: flex;
-      justify-content: space-around;
-      background: #0f0f0f;
-      border-top: 1px solid rgba(51, 51, 51, 0.5);
-      border-bottom: 1px solid rgba(51, 51, 51, 0.5);
-    }
-
-.video-container iframe {
-  width: 100%;
-  height: 100%;
-  border: none;
-  display: block;
-}
-    .tab-button {
-      flex: 1;
-      padding: 16px 0;
-      color: #b0b0b0;
-      cursor: pointer;
-      background: none;
-      border: none;
-      outline: none;
-      font-weight: 500;
-      font-size: 15px;
-      letter-spacing: 0.5px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      position: relative;
-      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-    }
-
-    .tab-button .material-icons {
-      font-size: 22px;
-      transition: all 0.3s ease;
-    }
-  .menu-icon {
-    position: absolute; left: 16px; color: #fff; font-size: 30px; cursor: pointer;
-  }
-    .tab-button:hover {
-      color: #e0e0e0;
-      background: rgba(255, 255, 255, 0.03);
-    }
-
-    .tab-button:hover .material-icons {
-      transform: translateY(-2px);
-    }
-
-    .tab-button.active {
-      color: #1db954;
-      font-weight: 600;
-    }
-
-    .tab-button.active .material-icons {
-      color: #1db954;
-      text-shadow: 0 0 10px rgba(29, 185, 84, 0.5);
-    }
-
-    .tab-button.active::after {
-      content: "";
-      position: absolute;
-      bottom: 6px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 60px;
-      height: 3px;
-      background: linear-gradient(90deg, rgba(29,185,84,0.5), #1db954, rgba(29,185,84,0.5));
-      border-radius: 10px;
-      animation: slideIn 0.3s ease-in-out forwards;
-      box-shadow: 0 0 10px rgba(29, 185, 84, 0.3);
-    }
-
-    @keyframes slideIn {
-      from { width: 0; opacity: 0; }
-      to { width: 60px; opacity: 1; }
-    }
-.menu-header {
-  font-size: 20px;
-  font-weight: 600;
-  text-align: center;
-  padding: 15px 0;
-  border-bottom: 1px solid rgba(255,255,255,0.2);
-  background: rgba(255,255,255,0.08);
-  color: #fff;
-}
-    .tab-content {
-      display: none;
-      width: 100%;
-      background: #0a0a0a;
-      margin-top: -1px;
-      border-top: 1px solid rgba(255, 255, 255, 0.05);
-    }
-.overlay {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 10000;
-  display: none;
-}
-
-.overlay.show {
-  display: block;
-}
-    .tab-content.active {
-      display: block;
-      animation: fadeIn 0.4s ease-out;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
-    .tab-content iframe {
-      width: 100%;
-      height: 600px; /* Adjustable height */
-      border: none;
-      display: block;
-      background: #0a0a0a;
-    }
-
-    /* Enhanced Plyr player styling */
-    .plyr--full-ui input[type=range] {
-      color: #1db954;
-    }
-  /* Sidebar Styles - Premium Glassmorphic */
-  .sidebar {
-    position: fixed; top: 0; left: -300px; width: 280px; height: 100%;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(20px);
-    border-right: 1px solid rgba(255,255,255,0.2);
-    color: #fff; z-index: 10001; transition: left 0.5s ease;
-    padding-top: 80px; box-shadow: 4px 0 15px rgba(0,0,0,0.4);
-    border-top-right-radius: 12px; border-bottom-right-radius: 12px;
-  }
-  .sidebar.open { left: 0; }
-  .sidebar a {
-    display: block; padding: 15px 24px; color: #fff; text-decoration: none;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-    font-weight: 500; font-size: 16px;
-    transition: background 0.3s, padding-left 0.3s;
-  }
-  .sidebar a:hover {
-    background: rgba(255,255,255,0.15);
-    padding-left: 32px;
-  }
-    .plyr__control--overlaid {
-      background: rgba(29, 185, 84, 0.8);
-      box-shadow: 0 0 20px rgba(29, 185, 84, 0.3);
-    }
-    .counter-box {
-      display: inline-block;
-      background: rgba(255, 255, 255, 0.08);
-      padding: 12px;
-      border-radius: 16px;
-      box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.1);
-      margin-top: 1rem;
-    }
-    
-    .counter-box img {
-      height: 48px;
-    }
-    .plyr__control--overlaid:hover {
-      background: #1db954;
-      transform: scale(1.05);
-    }
-
-    .plyr--video .plyr__control:hover {
-      background: #1db954;
-    }
-
-    .plyr__menu__container .plyr__control[role=menuitemradio][aria-checked=true]::before {
-      background: #1db954;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CricVerse</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Universal Loader Styles */
+        .universal-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--darker);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+        
+        .loader-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(67, 97, 238, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 1s ease-in-out infinite;
+            margin-bottom: 20px;
+        }
+        
+        .loader-text {
+            color: var(--text);
+            font-size: 16px;
+            font-weight: 500;
+            margin-top: 15px;
+            text-align: center;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a0ca3;
+            --accent: #f72585;
+            --dark: #0c0f1c;
+            --darker: #080b16;
+            --text: #f8f9fa;
+            --text-muted: #adb5bd;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--dark);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+        }
+        
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        
+        .card {
+            background: linear-gradient(145deg, #12172b, #0d1224);
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            padding: 40px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+            overflow: hidden;
+            transform: translateY(30px);
+            opacity: 0;
+            animation: cardEntrance 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+        
+        @keyframes cardEntrance {
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(67, 97, 238, 0.1) 0%, transparent 70%);
+            animation: rotate 15s linear infinite;
+            z-index: -1;
+        }
+        
+        .card::after {
+            content: '';
+            position: absolute;
+            inset: 1px;
+            border-radius: 19px;
+            background: linear-gradient(145deg, rgba(12, 15, 28, 0.7), rgba(8, 11, 22, 0.9));
+            z-index: -1;
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .icon-header {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 25px;
+        }
+        
+        .icon-container {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 10px 30px rgba(67, 97, 238, 0.4);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .material-icons-round {
+            font-size: 40px;
+            color: white;
+        }
+        
+        h1 {
+            text-align: center;
+            font-weight: 700;
+            font-size: 28px;
+            margin-bottom: 15px;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        
+        .features {
+            margin: 30px 0;
+        }
+        
+        .features-header {
+            text-align: center;
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--primary);
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+        
+        .features-header::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            border-radius: 3px;
+        }
+        
+        .feature {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            transition: all 0.3s ease;
+        }
+        
+        .feature:hover {
+            background: rgba(67, 97, 238, 0.1);
+            transform: translateX(5px);
+        }
+        
+        .feature-icon {
+            margin-right: 15px;
+            color: var(--primary);
+        }
+        
+        .feature-text {
+            flex: 1;
+        }
+        
+        .feature-title {
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+        
+        .feature-desc {
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+        
+        /* Enhanced Image Preview Section */
+        .preview-section {
+            margin: 30px 0;
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 15px;
+        }
+        
+        .preview-header {
+            text-align: center;
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--accent);
+            position: relative;
+        }
+        
+        .preview-header::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(to right, var(--accent), var(--primary));
+            border-radius: 3px;
+        }
+        
+        .preview-container {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+            width: 400%;
+        }
+        
+        .preview-slide {
+            min-width: 25%;
+            padding: 0 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .preview-image {
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .preview-image:hover {
+            transform: scale(1.02);
+            box-shadow: 0 15px 30px rgba(247, 37, 133, 0.3);
+        }
+        
+        /* Navigation Arrows */
+        .preview-nav-arrows {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+            pointer-events: none;
+            padding: 0 10px;
+        }
+        
+        .preview-arrow {
+            background: rgba(67, 97, 238, 0.7);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            pointer-events: all;
+            transition: all 0.3s;
+            color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        
+        .preview-arrow:hover {
+            background: var(--primary);
+            transform: scale(1.1);
+        }
+        
+        /* Navigation Dots */
+        .preview-nav {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            gap: 10px;
+        }
+        
+        .preview-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .preview-dot.active {
+            background: var(--accent);
+            transform: scale(1.2);
+        }
+        
+        /* Progress Bar */
+        .preview-progress {
+            width: 100%;
+            height: 3px;
+            background: rgba(255,255,255,0.1);
+            margin-top: 20px;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .preview-progress-bar {
+            height: 100%;
+            width: 0%;
+            background: var(--accent);
+            transition: width 0.1s linear;
+        }
+        
+        /* Lightbox Styles */
+        .lightbox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            animation: fadeIn 0.3s;
+        }
+        
+        .lightbox-content {
+            position: relative;
+            max-width: 90%;
+            max-height: 90%;
+        }
+        
+        .lightbox-content img {
+            max-height: 80vh;
+            border-radius: 8px;
+        }
+        
+        .lightbox-close {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            background: var(--accent);
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: white;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .btn-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        
+        .renew-btn {
+            background: linear-gradient(to right, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            padding: 16px 40px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 10px 25px rgba(67, 97, 238, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .renew-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(67, 97, 238, 0.5);
+        }
+        
+        .renew-btn:active {
+            transform: translateY(0);
+        }
+        
+        .renew-btn .material-icons-round {
+            font-size: 22px;
+            margin-left: 8px;
+            transition: transform 0.3s;
+        }
+        
+        .renew-btn:hover .material-icons-round {
+            transform: translateX(5px);
+        }
+        
+        .renew-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+        
+        .renew-btn:hover::before {
+            left: 100%;
+        }
+        
+        .timer-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+            gap: 15px;
+        }
+        
+        .timer-box {
+            text-align: center;
+        }
+        
+        .timer-value {
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(to bottom, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .timer-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-top: 5px;
+        }
+        
+        .expiry-notice {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+        
+        .expiry-notice strong {
+            color: var(--accent);
+        }
+    </style>
 </head>
 <body>
-<!-- Visitor Counter Popup -->
-<div class="popup-overlay" id="visitorPopup" style="display:none;">
-  <div class="popup-box">
-    <button class="close-btn" onclick="closeVisitorPopup()">×</button>
-    <div class="popup-header">Total Visitors</div>
-    <div class="popup-subtitle">Users Live On Web</div>
-    <div class="counter-box">
-      <img src="https://visit-counter.vercel.app/counter.png?page=allrounder.com&s=40&c=00ff00&bg=00000000&no=10&ff=digi&tb=&ta=" alt="Visitor Count" />
+    <!-- Universal Loader -->
+    <div class="universal-loader" id="universalLoader">
+        <div class="loader-spinner"></div>
+        <div class="loader-text">Loading Premium Experience...</div>
     </div>
-  </div>
-</div>
-<!-- Telegram Join Popup -->
-<div class="popup-overlay" id="popup">
-  <div class="popup-box">
-    <button class="close-btn" onclick="closePopup()">×</button>
-    <div class="popup-header">Support Us!</div>
-    <div class="popup-subtitle">Join our Telegram for latest updates.</div>
-    <div class="popup-buttons">
-      <a href="https://t.me/CriccVerse" target="_blank" class="popup-btn join-btn">Join Now</a>
-      <button class="popup-btn already-btn" onclick="closePopup()">Already Joined</button>
+    
+    <div class="particles" id="particles"></div>
+    
+    <div class="card">
+        <div class="icon-header">
+            <div class="icon-container">
+                <span class="material-icons-round">sports_soccer</span>
+            </div>
+        </div>
+        
+        <h1>CRICVERSE</h1>
+        <p class="subtitle">Hey CricVerse Admin Your Premium Site Access Denied From <strong>July 27, 11:24 PM</strong>. Renew now to restore uninterrupted streaming.</p>
+        
+        <div class="features">
+            <div class="features-header">Premium Features</div>
+            <div class="feature">
+                <span class="material-icons-round feature-icon">live_tv</span>
+                <div class="feature-text">
+                    <div class="feature-title">Live Matches</div>
+                    <div class="feature-desc">We provide coverage of all matches happening around the world</div>
+                </div>
+            </div>
+            
+            <div class="feature">
+                <span class="material-icons-round feature-icon">high_quality</span>
+                <div class="feature-text">
+                    <div class="feature-title">4K Quality</div>
+                    <div class="feature-desc">Crystal clear resolution with LiveChat,Scoreboard and Highlights</div>
+                </div>
+            </div>
+            
+            <div class="feature">
+                <span class="material-icons-round feature-icon">ondemand_video</span>
+                <div class="feature-text">
+                    <div class="feature-title">Highlights</div>
+                    <div class="feature-desc">Real-time highlights designed to keep your Users connected to every thrilling moment.</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Enhanced Image Preview Section -->
+        <div class="preview-section">
+            <div class="preview-header">Premium Preview</div>
+            <div class="preview-container" id="previewContainer">
+                <div class="preview-slide">
+                    <img src="https://i.ibb.co/XZLwVhb7/Picsart-25-07-28-18-11-10-839.jpg" alt="Preview 1" class="preview-image">
+                </div>
+                <div class="preview-slide">
+                    <img src="https://i.ibb.co/4Zk6frtd/Picsart-25-07-28-18-12-02-633.jpg" alt="Preview 2" class="preview-image">
+                </div>
+                <div class="preview-slide">
+                    <img src="https://i.ibb.co/8n6crnNF/Picsart-25-07-28-18-12-32-276.jpg" alt="Preview 3" class="preview-image">
+                </div>
+                <div class="preview-slide">
+                    <img src="https://i.ibb.co/0jGfY6YC/Picsart-25-07-28-18-13-00-124.jpg" alt="Preview 4" class="preview-image">
+                </div>
+            </div>
+            
+            <!-- Navigation Arrows -->
+            <div class="preview-nav-arrows">
+                <button class="preview-arrow preview-prev">
+                    <span class="material-icons-round">chevron_left</span>
+                </button>
+                <button class="preview-arrow preview-next">
+                    <span class="material-icons-round">chevron_right</span>
+                </button>
+            </div>
+            
+            <!-- Progress Bar -->
+            <div class="preview-progress">
+                <div class="preview-progress-bar"></div>
+            </div>
+            
+            <!-- Navigation Dots -->
+            <div class="preview-nav">
+                <div class="preview-dot active" data-index="0"></div>
+                <div class="preview-dot" data-index="1"></div>
+                <div class="preview-dot" data-index="2"></div>
+                <div class="preview-dot" data-index="3"></div>
+            </div>
+        </div>
+        
+        <div class="timer-container">
+            <div class="timer-box">
+                <div class="timer-value" id="days">00</div>
+                <div class="timer-label">Days</div>
+            </div>
+            <div class="timer-box">
+                <div class="timer-value" id="hours">00</div>
+                <div class="timer-label">Hours</div>
+            </div>
+            <div class="timer-box">
+                <div class="timer-value" id="minutes">00</div>
+                <div class="timer-label">Minutes</div>
+            </div>
+            <div class="timer-box">
+                <div class="timer-value" id="seconds">00</div>
+                <div class="timer-label">Seconds</div>
+            </div>
+        </div>
+        
+        <div class="expiry-notice">
+            Streaming paused for <strong id="expiry-time">0 days 00:00:00</strong>
+        </div>
+        
+        <div class="btn-container">
+            <a href="https://t.me/Jkiootu" class="renew-btn">
+                Renew Premium Now
+                <span class="material-icons-round">arrow_forward</span>
+            </a>
+        </div>
     </div>
-  </div>
-</div>
-  <header>
-<span class="material-icons menu-icon" onclick="toggleSidebar()">menu</span>
-    <img src="https://i.ibb.co/YFzVfg3Y/Picsart-25-07-25-15-57-46-430.png" alt="Logo">
-  </header>
-<div class="video-container">
-  <iframe
-    src="https://cricketstan.github.io/Sony-ten-5/"
-    frameborder="0"
-    allowfullscreen
-    allow="autoplay; encrypted-media"
-    sandbox="allow-forms allow-pointer-lock allow-same-origin allow-scripts allow-top-navigation"
-  ></iframe>
-</div>
-<div class="sidebar" id="sidebar">
-  <div class="menu-header">MENU</div>
-  <a href="https://t.me/CriccVerse" target="_blank"> Join Our Telegram</a>
-  <a href="https://t.me/CriccVerse" target="_blank"> Contact Us</a>
-  <a href="https://t.me/CriccVerse" target="_blank">Copyright</a>
-<a href="#" onclick="showVisitorPopup()">Total Visitor</a>
-</div>
-<div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
 
-  <div class="tabs">
-    <button class="tab-button active" onclick="switchTab('chat')">
-      <span class="material-icons">chat</span>
-      <span>Live Chat</span>
-    </button>
-    <button class="tab-button" onclick="switchTab('scoreboard')">
-      <span class="material-icons">leaderboard</span>
-      <span>Scoreboard</span>
-    </button>
-    <button class="tab-button" onclick="switchTab('highlights')">
-      <span class="material-icons">movie</span>
-      <span>Highlights</span>
-    </button>
-  </div>
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <script>
+        // Universal Loader
+        window.addEventListener('load', function() {
+            // Wait for all assets to load
+            setTimeout(function() {
+                const loader = document.getElementById('universalLoader');
+                loader.style.opacity = '0';
+                setTimeout(function() {
+                    loader.style.display = 'none';
+                }, 500);
+            }, 1500); // Minimum display time for smooth UX
+        });
 
-  <div id="chat" class="tab-content active">
-    <iframe src="https://cricketstan.github.io/Live-Chat/"></iframe>
-  </div>
-  <div id="scoreboard" class="tab-content">
-    <iframe src="https://live-scoreboard.pages.dev/"></iframe>
-  </div>
-  <div id="highlights" class="tab-content">
-    <iframe src="https://cricketstan.github.io/Top-moments-/" allowfullscreen></iframe>
-  </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-  <script src="https://cdn.plyr.io/3.7.8/plyr.js"></script>
-  <script>
-    const jsonUrl = 'https://raw.githubusercontent.com/StmpupCricket/Star-Sports-Hindi-json/refs/heads/main/data.json';
-
-    fetch(jsonUrl)
-      .then(res => res.json())
-      .then(data => {
-        const m3u8Url = data.stream_url;
-        const video = document.getElementById('player');
-
-        if (Hls.isSupported()) {
-          const hls = new Hls();
-          hls.loadSource(m3u8Url);
-          hls.attachMedia(video);
-          hls.on(Hls.Events.MANIFEST_PARSED, () => {
-            const qualities = hls.levels.map(l => l.height).filter((v, i, a) => a.indexOf(v) === i).sort((a, b) => b - a);
-            new Plyr(video, {
-              controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'settings', 'fullscreen'],
-              settings: ['quality', 'speed'],
-              quality: {
-                default: qualities[0],
-                options: qualities,
-                forced: true,
-                onChange: q => {
-                  const level = hls.levels.findIndex(l => l.height === q);
-                  hls.currentLevel = level;
+        // Initialize particles.js
+        particlesJS("particles", {
+            "particles": {
+                "number": {
+                    "value": 80,
+                    "density": {
+                        "enable": true,
+                             "value_area": 800
+                    }
+                },
+                "color": {
+                    "value": "#4361ee"
+                },
+                "shape": {
+                    "type": "circle",
+                    "stroke": {
+                        "width": 0,
+                        "color": "#000000"
+                    },
+                    "polygon": {
+                        "nb_sides": 5
+                    }
+                },
+                "opacity": {
+                    "value": 0.3,
+                    "random": true,
+                    "anim": {
+                        "enable": true,
+                        "speed": 1,
+                        "opacity_min": 0.1,
+                        "sync": false
+                    }
+                },
+                "size": {
+                    "value": 3,
+                    "random": true,
+                    "anim": {
+                        "enable": true,
+                        "speed": 2,
+                        "size_min": 0.1,
+                        "sync": false
+                    }
+                },
+                "line_linked": {
+                    "enable": true,
+                    "distance": 150,
+                    "color": "#4361ee",
+                    "opacity": 0.2,
+                    "width": 1
+                },
+                "move": {
+                    "enable": true,
+                    "speed": 1,
+                    "direction": "none",
+                    "random": true,
+                    "straight": false,
+                    "out_mode": "out",
+                    "bounce": false,
+                    "attract": {
+                        "enable": true,
+                        "rotateX": 600,
+                        "rotateY": 1200
+                    }
                 }
-              }
-            });
-            video.play();
-          });
-        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-          video.src = m3u8Url;
-          video.addEventListener('loadedmetadata', () => {
-            new Plyr(video, {
-              controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'settings', 'fullscreen'],
-              settings: ['quality', 'speed']
-            });
-            video.play();
-          });
-        } else {
-          alert("Your browser does not support HLS.");
+            },
+            "interactivity": {
+                "detect_on": "canvas",
+                "events": {
+                    "onhover": {
+                        "enable": true,
+                        "mode": "grab"
+                    },
+                    "onclick": {
+                        "enable": true,
+                        "mode": "push"
+                    },
+                    "resize": true
+                },
+                "modes": {
+                    "grab": {
+                        "distance": 140,
+                        "line_linked": {
+                            "opacity": 0.5
+                        }
+                    },
+                    "push": {
+                        "particles_nb": 4
+                    }
+                }
+            },
+            "retina_detect": true
+        });
+
+        // Exact timer calculation from July 27 at 11:24:20 PM
+        function updateTimer() {
+            const expiryDate = new Date(2025, 6, 27, 23, 24, 20); // July 27, 11:24:20 PM (month is 0-indexed)
+            const now = new Date();
+            const diff = now - expiryDate;
+            
+            // Calculate time units
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+            
+            // Update timer display
+            document.getElementById('days').textContent = days.toString().padStart(2, '0');
+            document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+            document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+            document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+            
+            // Update expiry notice
+            document.getElementById('expiry-time').textContent = 
+                `${days} day${days !== 1 ? 's' : ''} ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
         }
-      })
-      .catch(err => {
-        console.error('Failed to load stream:', err);
-        alert('Failed to load stream.');
-      });
+        
+        // Update immediately and then every second
+        updateTimer();
+        setInterval(updateTimer, 1000);
 
-    function switchTab(tabId) {
-      document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
-      document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+        // Enhanced Image Slider Functionality
+        const previewContainer = document.getElementById('previewContainer');
+        const dots = document.querySelectorAll('.preview-dot');
+        const prevBtn = document.querySelector('.preview-prev');
+        const nextBtn = document.querySelector('.preview-next');
+        const progressBar = document.querySelector('.preview-progress-bar');
+        let currentIndex = 0;
+        const slideCount = 4;
+        let autoSlideInterval;
+        let isTransitioning = false;
 
-      document.querySelector(`.tab-button[onclick*="${tabId}"]`).classList.add('active');
-      document.getElementById(tabId).classList.add('active');
-    }
-function toggleSidebar() {
-    document.getElementById('sidebar').classList.toggle('open');
-    document.getElementById('overlay').classList.toggle('show');
-  }
-function closePopup() {
-  document.getElementById('popup').style.display = 'none';
-}
-function showVisitorPopup() {
-    const popup = document.getElementById("visitorPopup");
-    popup.style.display = "flex";
-    setTimeout(() => {
-      popup.querySelector('.popup-box').style.opacity = '1';
-    }, 10);
-  }
+        function goToSlide(index) {
+            if (isTransitioning) return;
+            
+            isTransitioning = true;
+            currentIndex = (index + slideCount) % slideCount;
+            const translateX = -currentIndex * 25;
+            previewContainer.style.transform = `translateX(${translateX}%)`;
+            
+            // Update dots
+            dots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === currentIndex);
+            });
+            
+            // Reset progress bar
+            resetProgressBar();
+            
+            // Allow transitions again after a short delay
+            setTimeout(() => {
+                isTransitioning = false;
+            }, 500);
+        }
 
-  function closeVisitorPopup() {
-    const popup = document.getElementById("visitorPopup");
-    popup.querySelector('.popup-box').style.opacity = '0';
-    setTimeout(() => {
-      popup.style.display = "none";
-    }, 300);
-  }
-  </script>
+        function nextSlide() {
+            goToSlide(currentIndex + 1);
+        }
+
+        function prevSlide() {
+            goToSlide(currentIndex - 1);
+        }
+
+        function resetProgressBar() {
+            progressBar.style.width = '0%';
+            progressBar.style.transition = 'width 0.1s linear';
+            setTimeout(() => {
+                progressBar.style.transition = 'width 3s linear';
+                progressBar.style.width = '100%';
+            }, 10);
+        }
+
+        // Auto slide every 3 seconds
+        function startAutoSlide() {
+            clearInterval(autoSlideInterval);
+            resetProgressBar();
+            autoSlideInterval = setInterval(nextSlide, 3000);
+        }
+
+        // Initialize slider
+        dots.forEach(dot => {
+            dot.addEventListener('click', function() {
+                const index = parseInt(this.getAttribute('data-index'));
+                goToSlide(index);
+            });
+        });
+
+        // Arrow navigation
+        prevBtn.addEventListener('click', prevSlide);
+        nextBtn.addEventListener('click', nextSlide);
+
+        // Start autoslide
+        startAutoSlide();
+
+        // Pause autoslide when hovering over slider
+        previewContainer.addEventListener('mouseenter', () => {
+            clearInterval(autoSlideInterval);
+            progressBar.style.transition = 'none';
+        });
+
+        // Resume autoslide when mouse leaves
+        previewContainer.addEventListener('mouseleave', startAutoSlide);
+
+        // Lightbox functionality
+        document.querySelectorAll('.preview-image').forEach(img => {
+            img.addEventListener('click', function() {
+                const lightbox = document.createElement('div');
+                lightbox.className = 'lightbox';
+                lightbox.innerHTML = `
+                    <div class="lightbox-content">
+                        <img src="${this.src}" alt="${this.alt}">
+                        <button class="lightbox-close">
+                            <span class="material-icons-round">close</span>
+                        </button>
+                    </div>
+                `;
+                document.body.appendChild(lightbox);
+                
+                lightbox.addEventListener('click', (e) => {
+                    if(e.target === lightbox || e.target.closest('.lightbox-close')) {
+                        lightbox.style.opacity = '0';
+                        setTimeout(() => {
+                            lightbox.remove();
+                        }, 300);
+                    }
+                });
+            });
+        });
+
+        // Keyboard navigation for slider
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowRight') {
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                prevSlide();
+            }
+        });
+    </script>
 </body>
 </html>
+         
